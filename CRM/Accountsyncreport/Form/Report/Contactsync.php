@@ -81,8 +81,8 @@ class CRM_Accountsyncreport_Form_Report_Contactsync extends CRM_Report_Form {
         'dao' => 'CRM_Accountsync_DAO_AccountContact',
         'fields' => [
           'accounts_contact_id' => ['title' => E::ts('External Reference ID'), 'default' => TRUE,],
-          'last_sync_date' => ['title' => E::ts('Contact Last Synced'), 'default' => TRUE,],
-          'accounts_modified_date' => ['title' => E::ts('Last Modified Date'), 'default' => TRUE,],
+          'last_sync_date' => ['title' => E::ts('Contact Last Updated'), 'default' => TRUE,],
+          'accounts_modified_date' => ['title' => E::ts('Last Synced Date'), 'default' => TRUE,],
         ],
         'filters' => [
           'accounts_contact_id' => [
@@ -90,14 +90,24 @@ class CRM_Accountsyncreport_Form_Report_Contactsync extends CRM_Report_Form {
             'type' => CRM_Utils_Type::T_INT,
           ],
           'last_sync_date' => [
-            'title' => E::ts('Contact Last Synced'),
+            'title' => E::ts('Contact Last Updated'),
             'operatorType' => CRM_Report_Form::OP_DATE,
             'type' => CRM_Utils_Type::T_DATE
           ],
           'accounts_modified_date' => [
-            'title' => E::ts('Last Modified Date'),
+            'title' => E::ts('Last Synced Date'),
             'operatorType' => CRM_Report_Form::OP_DATE,
             'type' => CRM_Utils_Type::T_DATE
+          ],
+          'accounts_needs_update' => [
+            'title' => E::ts('Invoice Sync Status'),
+            'type' => CRM_Utils_Type::T_INT,
+            'operatorType' => CRM_Report_Form::OP_SELECT,
+            'options' => [
+              '' => ts('Any'),
+              '0' => ts('Completed'),
+              '1' => ts('Pending'),
+            ],
           ],
         ],
         'grouping' => 'account-contact-fields',

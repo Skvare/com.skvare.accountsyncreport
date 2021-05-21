@@ -142,8 +142,8 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
         'dao' => 'CRM_Accountsync_DAO_AccountInvoice',
         'fields' => [
           'accounts_invoice_id' => ['title' => E::ts('Invoice External Reference ID'), 'default' => TRUE,],
-          'last_sync_date' => ['title' => E::ts('Invoice Last Synced'), 'default' => TRUE,],
-          'accounts_modified_date' => ['title' => E::ts('Invoice Last Modified Date'), 'default' => TRUE,],
+          'last_sync_date' => ['title' => E::ts('Invoice Last Updated'), 'default' => TRUE,],
+          'accounts_modified_date' => ['title' => E::ts('Invoice Synced Date'), 'default' => TRUE,],
         ],
         'filters' => [
           'accounts_invoice_id' => [
@@ -151,14 +151,24 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
             'type' => CRM_Utils_Type::T_INT,
           ],
           'last_sync_date' => [
-            'title' => E::ts('Invoice Last Synced'),
+            'title' => E::ts('Invoice Last Updated'),
             'operatorType' => CRM_Report_Form::OP_DATE,
             'type' => CRM_Utils_Type::T_DATE
           ],
           'accounts_modified_date' => [
-            'title' => E::ts('Invoice Last Modified Date'),
+            'title' => E::ts('Invoice Synced Date'),
             'operatorType' => CRM_Report_Form::OP_DATE,
             'type' => CRM_Utils_Type::T_DATE
+          ],
+          'accounts_needs_update' => [
+            'title' => E::ts('Invoice Sync Status'),
+            'type' => CRM_Utils_Type::T_INT,
+            'operatorType' => CRM_Report_Form::OP_SELECT,
+            'options' => [
+              '' => ts('Any'),
+              '0' => ts('Completed'),
+              '1' => ts('Pending'),
+            ],
           ],
         ],
         'grouping' => 'account-invoice-fields',
@@ -224,6 +234,7 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
     // custom code to alter rows
     $entryFound = FALSE;
     $checkList = [];
+    $contributionTypes = CRM_Contribute_PseudoConstant::financialType();
     foreach ($rows as $rowNum => $row) {
 
       if (!empty($this->_noRepeats) && $this->_outputMode != 'csv') {
@@ -248,6 +259,10 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
         if ($value = $row['civicrm_membership_membership_type_id']) {
           $rows[$rowNum]['civicrm_membership_membership_type_id'] = CRM_Member_PseudoConstant::membershipType($value, FALSE);
         }
+        $entryFound = TRUE;
+      }
+      if ($value = CRM_Utils_Array::value('civicrm_contribution_financial_type_id', $row)) {
+        $rows[$rowNum]['civicrm_contribution_financial_type_id'] = $contributionTypes[$value];
         $entryFound = TRUE;
       }
 
