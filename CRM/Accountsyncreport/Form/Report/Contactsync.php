@@ -100,7 +100,7 @@ class CRM_Accountsyncreport_Form_Report_Contactsync extends CRM_Report_Form {
             'type' => CRM_Utils_Type::T_DATE
           ],
           'accounts_needs_update' => [
-            'title' => E::ts('Invoice Sync Status'),
+            'title' => E::ts('Contact Sync Status'),
             'type' => CRM_Utils_Type::T_INT,
             'operatorType' => CRM_Report_Form::OP_SELECT,
             'options' => [
