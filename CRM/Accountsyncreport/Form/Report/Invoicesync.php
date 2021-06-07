@@ -18,6 +18,8 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
   ];
   protected $_customGroupGroupBy = FALSE;
 
+  public $_drilldownReport = ['price/contributionbased' => 'Link to Detail Report'];
+
   function __construct() {
     $this->_columns = [
       'civicrm_contact' => [
@@ -64,6 +66,11 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
       'civicrm_contribution' => [
         'dao' => 'CRM_Contribute_DAO_Contribution',
         'fields' => [
+          'contribution_id' => [
+            'name' => 'id',
+            'no_display' => TRUE,
+            'required' => TRUE,
+          ],
           'contribution_status_id' => [
             'title' => ts('Contribution Status'),
           ],
@@ -235,6 +242,7 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
     $entryFound = FALSE;
     $checkList = [];
     $contributionTypes = CRM_Contribute_PseudoConstant::financialType();
+    $paymentInstruments = CRM_Contribute_PseudoConstant::paymentInstrument();
     foreach ($rows as $rowNum => $row) {
 
       if (!empty($this->_noRepeats) && $this->_outputMode != 'csv') {
@@ -278,6 +286,23 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
           $rows[$rowNum]['civicrm_address_country_id'] = CRM_Core_PseudoConstant::country($value, FALSE);
         }
         $entryFound = TRUE;
+      }
+
+      if ($value = CRM_Utils_Array::value('civicrm_contribution_payment_instrument_id', $row)) {
+        $rows[$rowNum]['civicrm_contribution_payment_instrument_id'] = $paymentInstruments[$value];
+        $entryFound = TRUE;
+      }
+
+      if (array_key_exists('civicrm_contribution_contribution_id', $row) &&
+        $rows[$rowNum]['civicrm_contribution_contribution_id'] &&
+        array_key_exists('civicrm_contribution_total_amount', $row)
+      ) {
+        $url = CRM_Report_Utils_Report::getNextUrl('price/contributionbased',
+          'reset=1&force=1&contribution_id_op=eq&contribution_id_value=' . $row['civicrm_contribution_contribution_id'],
+          $this->_absoluteUrl, $this->_id, $this->_drilldownReport
+        );
+        $rows[$rowNum]['civicrm_contribution_total_amount_link'] = $url;
+        $rows[$rowNum]['civicrm_contribution_total_amount_hover'] = E::ts("View Line item related to this record.");
       }
 
       if (array_key_exists('civicrm_contact_sort_name', $row) &&
