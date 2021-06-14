@@ -148,6 +148,10 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
       'civicrm_account_invoice' => [
         'dao' => 'CRM_Accountsync_DAO_AccountInvoice',
         'fields' => [
+          'id' => [
+            'name' => 'id',
+            'title' => E::ts('Account Invoice Internal ID')
+          ],
           'accounts_invoice_id' => ['title' => E::ts('Invoice External Reference ID'), 'default' => TRUE,],
           'last_sync_date' => ['title' => E::ts('Invoice Last Updated'), 'default' => TRUE,],
           'accounts_modified_date' => ['title' => E::ts('Invoice Synced Date'), 'default' => TRUE,],
@@ -303,6 +307,15 @@ class CRM_Accountsyncreport_Form_Report_Invoicesync extends CRM_Report_Form {
         );
         $rows[$rowNum]['civicrm_contribution_total_amount_link'] = $url;
         $rows[$rowNum]['civicrm_contribution_total_amount_hover'] = E::ts("View Line item related to this record.");
+      }
+
+      if (array_key_exists('civicrm_account_invoice_id', $row) && $rows[$rowNum]['civicrm_account_invoice_id']) {
+        $url = CRM_Utils_System::url('civicrm/accountsync/invoiceerror',
+          'reset=1&force=1&id=' . $row['civicrm_account_invoice_id'],
+          $this->_absoluteUrl
+        );
+        $rows[$rowNum]['civicrm_account_invoice_id_link'] = $url;
+        $rows[$rowNum]['civicrm_account_invoice_id_hover'] = E::ts("View Error details related to this record");
       }
 
       if (array_key_exists('civicrm_contact_sort_name', $row) &&

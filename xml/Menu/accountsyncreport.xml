@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/accountsync/invoiceerror</path>
+    <page_callback>CRM_Accountsyncreport_Page_Invoicesyncerror</page_callback>
+    <title>Invoicesyncerror</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/accountsync/contacterror</path>
+    <page_callback>CRM_Accountsyncreport_Page_Contactsyncerror</page_callback>
+    <title>Contactsyncerror</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>

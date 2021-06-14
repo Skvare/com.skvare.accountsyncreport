@@ -29,25 +29,19 @@ class CRM_Accountsyncreport_Form_Report_Contactsync extends CRM_Report_Form {
             'default' => TRUE,
             'no_repeat' => TRUE,
           ],
-          'id' => [
+          'id_a' => [
+            'title' => ts('Contact ID'),
             'no_display' => TRUE,
+            'name' => 'id',
             'required' => TRUE,
           ],
           'first_name' => [
             'title' => E::ts('First Name'),
             'no_repeat' => TRUE,
           ],
-          'id' => [
-            'no_display' => TRUE,
-            'required' => TRUE,
-          ],
           'last_name' => [
             'title' => E::ts('Last Name'),
             'no_repeat' => TRUE,
-          ],
-          'id' => [
-            'no_display' => TRUE,
-            'required' => TRUE,
           ],
         ],
         'filters' => [
@@ -80,6 +74,10 @@ class CRM_Accountsyncreport_Form_Report_Contactsync extends CRM_Report_Form {
       'civicrm_account_contact' => [
         'dao' => 'CRM_Accountsync_DAO_AccountContact',
         'fields' => [
+          'id' => [
+            'name' => 'id',
+            'title' => E::ts('Account Contact Internal ID')
+          ],
           'accounts_contact_id' => ['title' => E::ts('External Reference ID'), 'default' => TRUE,],
           'last_sync_date' => ['title' => E::ts('Contact Last Updated'), 'default' => TRUE,],
           'accounts_modified_date' => ['title' => E::ts('Last Synced Date'), 'default' => TRUE,],
@@ -204,12 +202,21 @@ class CRM_Accountsyncreport_Form_Report_Contactsync extends CRM_Report_Form {
         $entryFound = TRUE;
       }
 
+      if (array_key_exists('civicrm_account_contact_id', $row) && $rows[$rowNum]['civicrm_account_contact_id']) {
+        $url = CRM_Utils_System::url('civicrm/accountsync/contacterror',
+          'reset=1&force=1&id=' . $row['civicrm_account_contact_id'],
+          $this->_absoluteUrl
+        );
+        $rows[$rowNum]['civicrm_account_contact_id_link'] = $url;
+        $rows[$rowNum]['civicrm_account_contact_id_hover'] = E::ts("View Error details related to this record");
+      }
+
       if (array_key_exists('civicrm_contact_sort_name', $row) &&
         $rows[$rowNum]['civicrm_contact_sort_name'] &&
-        array_key_exists('civicrm_contact_id', $row)
+        array_key_exists('civicrm_contact_id_a', $row)
       ) {
         $url = CRM_Utils_System::url("civicrm/contact/view",
-          'reset=1&cid=' . $row['civicrm_contact_id'],
+          'reset=1&cid=' . $row['civicrm_contact_id_a'],
           $this->_absoluteUrl
         );
         $rows[$rowNum]['civicrm_contact_sort_name_link'] = $url;
